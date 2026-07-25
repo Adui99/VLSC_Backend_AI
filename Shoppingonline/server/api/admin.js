@@ -26,6 +26,54 @@ router.get('/token', JwtUtil.checkToken, function (req, res) {
 });
 // daos
 const CategoryDAO = require('../models/CategoryDAO');
+const ProductDAO = require('../models/ProductDAO');
+
+// product
+router.get('/products', JwtUtil.checkToken, async function (req, res) {
+  // get data
+  var products = await ProductDAO.selectAll();
+  // pagination
+  const sizePage = 4;
+  const noPages = Math.ceil(products.length / sizePage);
+  var curPage = 1;
+  if (req.query.page) curPage = parseInt(req.query.page); // /products?page=xxx
+  const offset = (curPage - 1) * sizePage;
+  products = products.slice(offset, offset + sizePage);
+  // return
+  const result = { products: products, noPages: noPages, curPage: curPage };
+  res.json(result);
+});
+
+router.post('/products', JwtUtil.checkToken, async function (req, res) {
+  const name = req.body.name;
+  const price = req.body.price;
+  const cid = req.body.category;
+  const image = req.body.image;
+  const now = new Date().getTime(); // milliseconds
+  const category = await CategoryDAO.selectByID(cid);
+  const product = { name: name, price: price, image: image, cdate: now, category: category };
+  const result = await ProductDAO.insert(product);
+  res.json(result);
+});
+
+router.put('/products/:id', JwtUtil.checkToken, async function (req, res) {
+  const _id = req.params.id;
+  const name = req.body.name;
+  const price = req.body.price;
+  const cid = req.body.category;
+  const image = req.body.image;
+  const now = new Date().getTime(); // milliseconds
+  const category = await CategoryDAO.selectByID(cid);
+  const product = { _id: _id, name: name, price: price, image: image, cdate: now, category: category };
+  const result = await ProductDAO.update(product);
+  res.json(result);
+});
+
+router.delete('/products/:id', JwtUtil.checkToken, async function (req, res) {
+  const _id = req.params.id;
+  const result = await ProductDAO.delete(_id);
+  res.json(result);
+});
 
 // category
 router.get('/categories', JwtUtil.checkToken, async function (req, res) {

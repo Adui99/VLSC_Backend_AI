@@ -7,6 +7,10 @@ const CategoryDAO = {
         const categories = await Models.Category.find(query).exec();
         return categories;
     },
+    async selectByID(_id) {
+        const category = await Models.Category.findById(_id).exec();
+        return category;
+    },
     async insert(category) {
         const mongoose = require('mongoose');
         category._id = new mongoose.Types.ObjectId();
@@ -19,7 +23,7 @@ const CategoryDAO = {
         return result;
     },
     async delete(_id) {
-        const result = await Models.Category.findByIdAndRemove(_id);
+        const result = await (Models.Category.findByIdAndDelete ? Models.Category.findByIdAndDelete(_id) : Models.Category.findByIdAndRemove(_id));
         return result;
     }
 };
