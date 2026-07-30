@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: ['admin', 'teacher', 'student'],
-        message: 'Role không hợp lệ (admin, teacher, student)',
+        values: ['admin', 'lecturer', 'student'],
+        message: 'Role không hợp lệ (admin, lecturer, student)',
       },
       default: 'student',
     },

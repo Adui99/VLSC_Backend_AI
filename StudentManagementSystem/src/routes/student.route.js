@@ -18,7 +18,7 @@ router
   .route('/')
   .get(validate(listStudentQuerySchema, 'query'), studentController.getStudents)
   .post(
-    authorize('admin', 'teacher'),
+    authorize('admin'),
     validate(createStudentSchema, 'body'),
     studentController.createStudent
   );
@@ -27,7 +27,7 @@ router
   .route('/:id')
   .get(validate(studentIdParamSchema, 'params'), studentController.getStudentById)
   .put(
-    authorize('admin', 'teacher'),
+    authorize('admin', 'lecturer'),
     validate(studentIdParamSchema, 'params'),
     validate(updateStudentSchema, 'body'),
     studentController.updateStudent

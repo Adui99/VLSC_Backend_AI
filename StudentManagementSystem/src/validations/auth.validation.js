@@ -15,8 +15,8 @@ const registerSchema = Joi.object({
     'string.min': 'Mật khẩu phải có ít nhất 6 ký tự',
     'any.required': 'Mật khẩu là bắt buộc',
   }),
-  role: Joi.string().valid('admin', 'teacher', 'student').default('student').messages({
-    'any.only': 'Role phải là admin, teacher hoặc student',
+  role: Joi.string().valid('admin', 'lecturer', 'student').default('student').messages({
+    'any.only': 'Role phải là admin, lecturer hoặc student',
   }),
 });
 
