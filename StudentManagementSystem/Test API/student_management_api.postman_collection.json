@@ -1,14 +1,19 @@
 {
   "info": {
     "_postman_id": "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
-    "name": "Student Management API Collection",
-    "description": "Postman Collection đầy đủ cho hệ thống Student Management API (Node.js + Express + MongoDB + JWT Auth + RBAC).\nBao gồm tự động lưu Token khi Đăng nhập và tự động lưu Student ID khi Tạo mới sinh viên.",
+    "name": "StudentManagementSystem",
+    "description": "Postman Collection cấu trúc chuẩn cho bài tập Student_Buoi7. Tự động lưu token khi Login và tự động lưu studentId khi xem/tạo sinh viên.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "baseUrl",
       "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
       "type": "string"
     },
     {
@@ -24,10 +29,10 @@
   ],
   "item": [
     {
-      "name": "1. Authentication (Xác thực người dùng)",
+      "name": "Student_Buoi7",
       "item": [
         {
-          "name": "Đăng ký tài khoản (Admin)",
+          "name": "0. Register User (Tạo Admin/Lecturer/Student)",
           "request": {
             "method": "POST",
             "header": [
@@ -39,54 +44,35 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Quản trị viên\",\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+              "raw": "{\n  \"fullName\": \"Tài Khoản Mới\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"Password123!\",\n  \"role\": \"admin\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             },
-            "description": "Đăng ký tài khoản mới với vai trò Admin. Response trả về sẽ kèm theo Token xác thực."
+            "description": "Đăng ký tài khoản người dùng mới. Đổi trường 'role' thành 'admin', 'lecturer' hoặc 'student' tuỳ nhu cầu."
           },
           "response": []
         },
         {
-          "name": "Đăng ký tài khoản (Giáo viên)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Giảng viên A\",\n  \"email\": \"teacher@gmail.com\",\n  \"password\": \"teacher123\",\n  \"role\": \"teacher\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
-            },
-            "description": "Đăng ký tài khoản mới với vai trò Teacher."
-          },
-          "response": []
-        },
-        {
-          "name": "Đăng nhập hệ thống (Login)",
+          "name": "1. Login ad Admin",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "// Tự động lưu JWT Token vào biến accessToken sau khi đăng nhập thành công",
                   "if (pm.response.code === 200) {",
                   "    var jsonData = pm.response.json();",
                   "    if (jsonData.data && jsonData.data.token) {",
+                  "        pm.collectionVariables.set(\"token\", jsonData.data.token);",
                   "        pm.collectionVariables.set(\"accessToken\", jsonData.data.token);",
-                  "        console.log(\"Saved accessToken: \", jsonData.data.token);",
+                  "        console.log(\"Saved token for Admin: \", jsonData.data.token);",
                   "    }",
                   "}"
                 ],
@@ -105,59 +91,129 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"admin123\"\n}"
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             },
-            "description": "Đăng nhập để lấy JWT Access Token. Token sẽ tự động được gán vào biến {{accessToken}}."
+            "description": "Đăng nhập vai trò Admin. Tự động lưu Token vào biến {{token}}."
           },
           "response": []
         },
         {
-          "name": "Lấy thông tin cá nhân (Get Profile)",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "me"]
-            },
-            "description": "Xem thông tin cá nhân của người dùng đang đăng nhập dựa trên JWT Token."
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "2. Student Management (Quản lý Sinh viên)",
-      "item": [
-        {
-          "name": "Tạo sinh viên mới",
+          "name": "1. Login as Lectuer",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "// Tự động lưu _id sinh viên vừa tạo vào biến studentId",
-                  "if (pm.response.code === 201) {",
+                  "if (pm.response.code === 200) {",
                   "    var jsonData = pm.response.json();",
-                  "    if (jsonData.data && jsonData.data._id) {",
-                  "        pm.collectionVariables.set(\"studentId\", jsonData.data._id);",
-                  "        console.log(\"Saved studentId: \", jsonData.data._id);",
+                  "    if (jsonData.data && jsonData.data.token) {",
+                  "        pm.collectionVariables.set(\"token\", jsonData.data.token);",
+                  "        pm.collectionVariables.set(\"accessToken\", jsonData.data.token);",
+                  "        console.log(\"Saved token for Lecturer: \", jsonData.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"lecturer@example.com\",\n  \"password\": \"Lecturer@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập vai trò Lecturer (Giảng viên). Tự động lưu Token vào biến {{token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "1. Login as Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.token) {",
+                  "        pm.collectionVariables.set(\"token\", jsonData.data.token);",
+                  "        pm.collectionVariables.set(\"accessToken\", jsonData.data.token);",
+                  "        console.log(\"Saved token for Student: \", jsonData.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"Student@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập vai trò Student (Sinh viên). Tự động lưu Token vào biến {{token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Students",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    var list = jsonData.data ? (jsonData.data.results || jsonData.data) : [];",
+                  "    if (list.length > 0 && list[0]._id) {",
+                  "        pm.collectionVariables.set(\"studentId\", list[0]._id);",
+                  "        console.log(\"Saved studentId: \", list[0]._id);",
                   "    }",
                   "}"
                 ],
@@ -171,41 +227,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"studentCode\": \"SV65001\",\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"nguyenvana@gmail.com\",\n  \"dateOfBirth\": \"2002-05-15\",\n  \"gender\": \"male\",\n  \"className\": \"CNTT-K65\",\n  \"gpa\": 3.65\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/students",
-              "host": ["{{baseUrl}}"],
-              "path": ["students"]
-            },
-            "description": "Tạo hồ sơ sinh viên mới. Đòi hỏi vai trò Admin hoặc Teacher."
-          },
-          "response": []
-        },
-        {
-          "name": "Lấy danh sách sinh viên (Có Phân trang & Tìm kiếm)",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -213,55 +235,37 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/students?page=1&limit=10&search=Nguyễn&className=CNTT-K65&sortBy=createdAt&order=desc",
-              "host": ["{{baseUrl}}"],
-              "path": ["students"],
+              "raw": "{{baseUrl}}/students?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "students"
+              ],
               "query": [
                 {
                   "key": "page",
-                  "value": "1",
-                  "description": "Trang hiện tại"
+                  "value": "1"
                 },
                 {
                   "key": "limit",
-                  "value": "10",
-                  "description": "Số bản ghi mỗi trang"
-                },
-                {
-                  "key": "search",
-                  "value": "Nguyễn",
-                  "description": "Từ khóa tìm kiếm (tên, MSV, email)"
-                },
-                {
-                  "key": "className",
-                  "value": "CNTT-K65",
-                  "description": "Lọc theo lớp học"
-                },
-                {
-                  "key": "sortBy",
-                  "value": "createdAt",
-                  "description": "Trường sắp xếp (fullName, studentCode, gpa, createdAt)"
-                },
-                {
-                  "key": "order",
-                  "value": "desc",
-                  "description": "Thứ tự sắp xếp (asc hoặc desc)"
+                  "value": "10"
                 }
               ]
             },
-            "description": "Lấy danh sách sinh viên hỗ trợ lọc, tìm kiếm và phân trang."
+            "description": "Lấy danh sách tất cả sinh viên. Tự động lưu studentId của sinh viên đầu tiên."
           },
           "response": []
         },
         {
-          "name": "Lấy chi tiết 1 sinh viên theo ID",
+          "name": "3. Get Student By Id",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{accessToken}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -270,22 +274,82 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/students/{{studentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["students", "{{studentId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "students",
+                "{{studentId}}"
+              ]
             },
-            "description": "Xem thông tin chi tiết sinh viên bằng ID trong biến {{studentId}}."
+            "description": "Xem chi tiết 1 sinh viên theo {{studentId}}."
           },
           "response": []
         },
         {
-          "name": "Cập nhật sinh viên (PUT)",
+          "name": "4. Create Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data._id) {",
+                  "        pm.collectionVariables.set(\"studentId\", jsonData.data._id);",
+                  "        console.log(\"Saved studentId from POST: \", jsonData.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{accessToken}}",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentCode\": \"SV65005\",\n  \"fullName\": \"Trần Thị Thuỷ\",\n  \"email\": \"tranthithuy@example.com\",\n  \"dateOfBirth\": \"2003-07-25\",\n  \"gender\": \"female\",\n  \"className\": \"CNTT01\",\n  \"gpa\": 3.8\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "students"
+              ]
+            },
+            "description": "Tạo mới sinh viên. Đòi hỏi vai trò Admin (Status 201). Role Lecturer & Student bị từ chối (Status 403)."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Update Student",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -300,26 +364,31 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Nguyễn Văn A (Đã cập nhật)\",\n  \"gpa\": 3.85,\n  \"className\": \"CNTT-K65-VIP\"\n}"
+              "raw": "{\n  \"fullName\": \"Trần Thị Thuỷ (Cập nhật)\",\n  \"gpa\": 3.9\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/students/{{studentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["students", "{{studentId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "students",
+                "{{studentId}}"
+              ]
             },
-            "description": "Cập nhật thông tin sinh viên theo ID. Đòi hỏi vai trò Admin hoặc Teacher."
+            "description": "Cập nhật sinh viên theo {{studentId}}. Cho phép Admin & Lecturer (Status 200). Role Student bị từ chối (Status 403)."
           },
           "response": []
         },
         {
-          "name": "Xóa sinh viên (DELETE)",
+          "name": "6. Delete Student",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{accessToken}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -328,10 +397,15 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/students/{{studentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["students", "{{studentId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "students",
+                "{{studentId}}"
+              ]
             },
-            "description": "Xóa 1 hồ sơ sinh viên theo ID. Chỉ dành cho vai trò Admin."
+            "description": "Xoá sinh viên theo {{studentId}}. Chỉ cho phép Admin (Status 200). Role Lecturer & Student bị từ chối (Status 403)."
           },
           "response": []
         }
