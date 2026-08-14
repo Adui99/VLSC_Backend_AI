@@ -11,11 +11,11 @@ class Inform extends Component {
           {this.context.token === '' ?
             <div><Link to='/login'>Login</Link> | <Link to='/signup'>Sign-up</Link> | <Link to='/active'>Active</Link></div>
             :
-            <div>Hello <b>{this.context.customer.name}</b> | <Link to='/home' onClick={() => this.lnkLogoutClick()}>Logout</Link> | <Link to='/myprofile'>My profile</Link> | <Link to=''>My orders</Link></div>
+            <div>Hello <b>{this.context.customer.name}</b> | <Link to='/home' onClick={() => this.lnkLogoutClick()}>Logout</Link> | <Link to='/myprofile'>My profile</Link> | <Link to='/myorders'>My orders</Link></div>
           }
         </div>
         <div className="float-right">
-          <Link to=''>My cart</Link> have <b>0</b> items
+          <Link to='/mycart'>My cart</Link> have <b>{this.context.mycart.length}</b> items
         </div>
         <div className="float-clear" />
       </div>
@@ -25,6 +25,8 @@ class Inform extends Component {
   lnkLogoutClick() {
     this.context.setToken('');
     this.context.setCustomer(null);
+    this.context.setMycart([]);
   }
 }
 export default Inform;
+
