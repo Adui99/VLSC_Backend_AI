@@ -3,8 +3,8 @@ const MyConstants = {
   DB_USER: 'duyhoang030199_db_user',
   DB_PASS: 'Ron@ldo9',
   DB_DATABASE: 'shoppingonline',
-  EMAIL_USER: '<email_user>', // Microsoft mail service
-  EMAIL_PASS: '<email_pass>',
+  EMAIL_USER: process.env.EMAIL_USER || 'never.again0121@gmail.com', // Gmail service
+  EMAIL_PASS: process.env.EMAIL_PASS || 'pooobrqbdnkxetpz',
   JWT_SECRET: 'kipalog',
   JWT_EXPIRES: '36000000', // in milliseconds
 };
