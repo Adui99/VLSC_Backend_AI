@@ -5,7 +5,7 @@ class Home extends Component {
     return (
       <div className="align-center">
         <h2 className="text-center">ADMIN HOME</h2>
-        <img src="https://via.placeholder.com/800x600.png?text=Admin+Home" width="800px" height="600px" alt="" />
+        <img src={process.env.PUBLIC_URL + '/admin_home.png'} width="800px" height="600px" alt="Admin Home" style={{ borderRadius: '8px', objectFit: 'cover' }} />
       </div>
     );
   }

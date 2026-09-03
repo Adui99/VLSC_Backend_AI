@@ -1,0 +1,63 @@
+{
+  "classes": [
+    {
+      "_id": "66c3a1f1e4b0112345678901",
+      "classCode": "D21CNTT01",
+      "className": "Lớp Công nghệ thông tin 1 khóa 2021",
+      "academicYear": "2021-2025"
+    }
+  ],
+  "lecturers": [
+    {
+      "_id": "66c3a1f1e4b0112345678902",
+      "lecturerCode": "GV001",
+      "fullName": "TS. Nguyễn Văn Hùng",
+      "email": "hung.nguyen@university.edu.vn",
+      "phone": "0901112233",
+      "department": "Khoa học máy tính"
+    }
+  ],
+  "courses": [
+    {
+      "_id": "66c3a1f1e4b0112345678903",
+      "courseCode": "CS101",
+      "courseName": "Cơ sở dữ liệu",
+      "credits": 3
+    }
+  ],
+  "students": [
+    {
+      "_id": "66c3a1f1e4b0112345678904",
+      "studentCode": "SV001",
+      "fullName": "Nguyễn Văn An",
+      "email": "student@example.com",
+      "phone": "0912345678",
+      "dateOfBirth": "2003-05-15T00:00:00.000Z",
+      "address": {
+        "street": "123 Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội"
+      },
+      "class": "66c3a1f1e4b0112345678901"
+    }
+  ],
+  "enrollments": [
+    {
+      "_id": "66c3a1f1e4b0112345678905",
+      "student": "66c3a1f1e4b0112345678904",
+      "section": {
+        "course": "66c3a1f1e4b0112345678903",
+        "lecturer": "66c3a1f1e4b0112345678902",
+        "semester": "HK1-2025",
+        "room": "Lab 301"
+      },
+      "scores": {
+        "midterm": 8.5,
+        "final": 9.0,
+        "total": 8.8
+      },
+      "status": "COMPLETED",
+      "enrollDate": "2025-08-20T09:00:00.000Z"
+    }
+  ]
+}
